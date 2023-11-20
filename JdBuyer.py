@@ -72,33 +72,45 @@ class Buyer(object):
         :submitInterval 下单尝试间隔（单位秒）
         :buyTime 定时执行
         """
-        self.session.fetchItemDetail(skuId)
-        timer = Timer(buyTime)
-        timer.start()
+        # self.session.fetchItemDetail(skuId)
+        # timer = Timer(buyTime)
+        # timer.start()
 
         while True:
             try:
-                if not self.session.getItemStock(skuId, skuNum, areaId):
-                    logger.info('不满足下单条件，{0}s后进行下一次查询'.format(stockInterval))
-                else:
-                    logger.info('{0} 满足下单条件，开始执行'.format(skuId))
-                    if self.session.trySubmitOrder(skuId, skuNum, areaId, submitRetry, submitInterval):
-                        logger.info('下单成功')
-                        if self.enableWx:
-                            send_wechat(
-                                message='JdBuyerApp', desp='您的商品已下单成功，请及时支付订单', sckey=self.scKey)
-                        return
+                # if not self.session.getItemStock(skuId, skuNum, areaId):
+                #     logger.info('不满足下单条件，{0}s后进行下一次查询'.format(stockInterval))
+                # else:
+                #     logger.info('{0} 满足下单条件，开始执行'.format(skuId))
+                #     if self.session.trySubmitOrder(skuId, skuNum, areaId, submitRetry, submitInterval):
+                #         logger.info('下单成功')
+                #         if self.enableWx:
+                #             send_wechat(
+                #                 message='JdBuyerApp', desp='您的商品已下单成功，请及时支付订单', sckey=self.scKey)
+                #         return
+                logger.info('{0} 满足下单条件，开始执行'.format(skuId))
+                if self.session.trySubmitOrder(skuId, skuNum, areaId, submitRetry, submitInterval):
+                    logger.info('下单成功')
+                    if self.enableWx:
+                        send_wechat(
+                            message='JdBuyerApp', desp='您的商品已下单成功，请及时支付订单', sckey=self.scKey)
+                    return
             except Exception as e:
                 logger.error(e)
             time.sleep(stockInterval)
 
 
 if __name__ == '__main__':
-
+    """
+    京东E卡：
+    100-1107845
+    200-1107847
+    500-1107843
+    """
     # 商品sku
-    skuId = '100015253059'
+    skuId = '1107845'
     # 区域id(可根据工程 area_id 目录查找)
-    areaId = '1_2901_55554_0'
+    areaId = '15_1213_3410'
     # 购买数量
     skuNum = 1
     # 库存查询间隔(秒)

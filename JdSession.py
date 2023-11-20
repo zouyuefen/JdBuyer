@@ -210,7 +210,7 @@ class Session(object):
         }
 
         resp = self.sess.post(url=url, headers=headers, data=data)
-
+        print(resp)
         # return self.respStatus(resp) and resp.json()['success']
         return resp
 
@@ -308,17 +308,20 @@ class Session(object):
         """提交订单
         :return: 订单提交结果 True/False
         """
-        itemDetail = self.itemDetails[skuId]
-        isYushou = False
-        if 'yushouUrl' in itemDetail:
-            self.getPreSallCheckoutPage(skuId, skuNum)
-            isYushou = True
-        else:
-            self.prepareCart(skuId, skuNum, areaId)
-            self.getCheckoutPage()
+        # itemDetail = self.itemDetails[skuId]
+        # isYushou = False
+        # if 'yushouUrl' in itemDetail:
+        #     self.getPreSallCheckoutPage(skuId, skuNum)
+        #     isYushou = True
+        # else:
+        #     self.prepareCart(skuId, skuNum, areaId)
+        #     self.getCheckoutPage()
+
+        self.prepareCart(skuId, skuNum, areaId)
+        self.getCheckoutPage()
 
         for i in range(1, retry + 1):
-            ret, msg = self.submitOrder(isYushou)
+            ret, msg = self.submitOrder(False)
             if ret:
                 return True
             else:
